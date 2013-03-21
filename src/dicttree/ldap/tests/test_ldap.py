@@ -1,8 +1,6 @@
 import ldap
 import unittest
 
-from itertools import chain
-
 from dicttree.ldap import Directory
 from dicttree.ldap import Node
 from dicttree.ldap.tests import mixins
