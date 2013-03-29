@@ -33,6 +33,7 @@ print-syspath:
 
 
 var:
+	test -L var -a ! -e var && rm var || true
 	ln -s $(shell mktemp --tmpdir -d dicttree.ldap-var-XXXXXXXXXX) var
 
 var-clean:
@@ -56,4 +57,4 @@ update-ldap-schema:
 	mkdir -p etc/openldap/schema
 	cp nixenv/etc/openldap/schema/* etc/openldap/schema/
 
-.PHONY: all bootstrap check coverage print-syspath pyoc-clean test-nose var-clean
+.PHONY: all bootstrap check coverage print-syspath pyoc-clean test-nose var var-clean
