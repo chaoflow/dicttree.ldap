@@ -6,9 +6,6 @@ from ldap import NO_SUCH_OBJECT
 import copy
 
 
-
-import ipdb
-
 class Attributes(object):
     def __init__(self, dn=None, attrs=(), ldap=None):
         self.dn = dn
