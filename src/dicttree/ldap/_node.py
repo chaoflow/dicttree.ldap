@@ -34,14 +34,12 @@ class Attributes(object):
         self._ldap.modify_s(self.dn, [(ldap.MOD_DELETE, name, value)])
 
     def __iter__(self):
-        return (item[0] for item in self._search(self.dn, SCOPE_BASE))
+        return (item[0] for item in self._search())
 
-    def _search(self, base, scope, filterstr='(objectClass=*)', attrlist=None,
-                timeout=-1):
+    def _search(self, attrlist=None):
         """ldap search returning a generator on attributes
         """
-        entry = self._ldap.search_s(base, scope,
-                                  filterstr=filterstr, attrlist=attrlist)
+        entry = self._ldap.search_s(self.dn, SCOPE_BASE, attrlist=attrlist)
         for name in entry[0][1]:
             yield (name, entry[0][1][name])
 
@@ -56,12 +54,11 @@ class Attributes(object):
         return iter(self)
 
     def values(self):
-        return (item[1] for item in self._search(self.dn, SCOPE_BASE))
+        return (item[1] for item in self._search())
 
     def items(self):
         res = dict(self.attrs).items()
-        res2 = ((item[0], item[1]) for item in
-                self._search(self.dn, SCOPE_BASE))
+        res2 = [(item[0], item[1]) for item in self._search()]
         #res = [('objectClass', ['organizationalRole']), ('cn', ['cn0'])]
         #ipdb.set_trace()
         return res
