@@ -1,0 +1,7 @@
+from ldap import SCOPE_BASE
+from ldap import SCOPE_ONELEVEL
+from ldap import SCOPE_SUBTREE
+
+BASE = SCOPE_BASE
+ONELEVEL = SCOPE_ONELEVEL
+SUBTREE = SCOPE_SUBTREE

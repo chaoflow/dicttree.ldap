@@ -1,9 +1,9 @@
 import ldap
 
-from ldap import SCOPE_BASE
 from ldap import NO_SUCH_OBJECT
 
 import copy
+from dicttree.ldap import scope
 
 
 class Attributes(object):
@@ -13,12 +13,12 @@ class Attributes(object):
         self._ldap = ldap
 
     def __contains__(self, name):
-        entry = self._ldap.search_s(self.dn, SCOPE_BASE,
+        entry = self._ldap.search_s(self.dn, scope.BASE,
                                     attrlist=[name], attrsonly=True)[0]
         return len(entry[1]) > 0
 
     def __getitem__(self, name):
-        entry = self._ldap.search_s(self.dn, SCOPE_BASE,
+        entry = self._ldap.search_s(self.dn, scope.BASE,
                                     attrlist=[name])[0]
         return entry[1][name]
 
@@ -39,7 +39,7 @@ class Attributes(object):
     def _search(self, attrlist=None):
         """ldap search returning a generator on attributes
         """
-        entry = self._ldap.search_s(self.dn, SCOPE_BASE, attrlist=attrlist)
+        entry = self._ldap.search_s(self.dn, scope.BASE, attrlist=attrlist)
         for name in entry[0][1]:
             yield (name, entry[0][1][name])
 

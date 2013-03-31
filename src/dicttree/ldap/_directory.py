@@ -1,11 +1,9 @@
 import copy
 import ldap
 
-from ldap import SCOPE_BASE
-from ldap import SCOPE_ONELEVEL
-from ldap import SCOPE_SUBTREE
 from ldap.ldapobject import LDAPObject
 
+from dicttree.ldap import scope
 from dicttree.ldap._node import Node
 from dicttree.ldap._views import KeysView
 from dicttree.ldap._views import ItemsView
@@ -22,14 +20,14 @@ class Directory(object):
 
     def __contains__(self, dn):
         try:
-            return dn == self._ldap.search_s(dn, SCOPE_BASE,
+            return dn == self._ldap.search_s(dn, scope.BASE,
                                              attrlist=[''])[0][0]
         except ldap.NO_SUCH_OBJECT:
             return False
 
     def __getitem__(self, dn):
         try:
-            entry = self._ldap.search_s(dn, SCOPE_BASE)[0]
+            entry = self._ldap.search_s(dn, scope.BASE)[0]
         except ldap.NO_SUCH_OBJECT:
             raise KeyError(dn)
         node = Node(name=dn, attrs=entry[1], ldap=self._ldap)
@@ -51,7 +49,7 @@ class Directory(object):
 
     def __iter__(self):
         return (x[0][0] for x in
-                self._search(self.base_dn, SCOPE_SUBTREE)
+                self._search(self.base_dn, scope.SUBTREE)
                 if x[0][0] != self.base_dn)
 
     def _search(self, base, scope, filterstr='(objectClass=*)', attrlist=None,
@@ -106,7 +104,7 @@ class Directory(object):
 
     def popitem(self):
         if not self:
-          raise KeyError
+            raise KeyError
         dn = next(iter(self))
         node = self[dn]
         del self[dn]
@@ -133,7 +131,7 @@ class Directory(object):
     def itervalues(self):
         return (Node(name=x[0][0], attrs=x[0][1], ldap=self._ldap) for x in
                 self._search(self.base_dn,
-                                  ldap.SCOPE_SUBTREE, attrlist=[''])
+                             scope.SUBTREE, attrlist=[''])
                 if x[0][0] != self.base_dn)
 
     def iteritems(self):
