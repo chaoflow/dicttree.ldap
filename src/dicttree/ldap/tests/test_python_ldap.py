@@ -32,10 +32,10 @@ class TestAttrlistAttrsonly(mixins.Slapd, unittest.TestCase):
                       'modifyTimestamp': [],
                       'structuralObjectClass': [],
                       'subschemaSubentry': []})],
-            self.ldap.search_s('o=o', ldap.SCOPE_BASE, attrlist=['+'], attrsonly=True))
+            self.ldap.search_s('o=o', ldap.SCOPE_BASE,
+                               attrlist=['+'], attrsonly=True))
 
         # attrlist=[''] skips all attributes
         self.assertEqual(
             [('o=o', {})],
             self.ldap.search_s('o=o', ldap.SCOPE_BASE, attrlist=['']))
-

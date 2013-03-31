@@ -1,7 +1,6 @@
 from unittest import TestCase
 
-from dicttree.ldap import Node
-
+from dicttree.ldap._node import Node
 
 class BadNode(Node):
     """Ignores name and returns an ever incrementing name
