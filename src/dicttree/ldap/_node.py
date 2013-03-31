@@ -1,8 +1,6 @@
+import copy
 import ldap
 
-from ldap import NO_SUCH_OBJECT
-
-import copy
 from dicttree.ldap import scope
 
 
@@ -58,7 +56,7 @@ class Attributes(object):
 
     def items(self):
         res = dict(self.attrs).items()
-        res2 = [(item[0], item[1]) for item in self._search()]
+        #res2 = [(item[0], item[1]) for item in self._search()]
         #res = [('objectClass', ['organizationalRole']), ('cn', ['cn0'])]
         #ipdb.set_trace()
         return res
@@ -109,6 +107,7 @@ class Attributes(object):
         for name, value in items:
             self[name] = value
         return None
+
 
 class Node(object):
     def __init__(self, name=None, attrs=(), ldap=None):

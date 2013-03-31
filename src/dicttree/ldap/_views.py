@@ -1,5 +1,6 @@
-import itertools
 import collections
+import itertools
+
 
 class DirView(object):
     def __init__(self, directory):
@@ -27,17 +28,21 @@ class DirView(object):
     def __ne__(self, other):
         return not self == other
 
+
 class DirViewSet(DirView, collections.Set):
     def _from_iterable(self, iterable):
         return set(iterable)
+
 
 class ItemsView(DirViewSet):
     def __iter__(self):
         return self.directory.iteritems()
 
+
 class KeysView(DirViewSet):
     def __iter__(self):
         return iter(self.directory)
+
 
 class ValuesView(DirView):
     def __iter__(self):
