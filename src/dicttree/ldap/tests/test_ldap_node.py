@@ -5,6 +5,7 @@ from ldap import PROTOCOL_ERROR
 from dicttree.ldap.tests import mixins
 from dicttree.ldap._node import Attributes
 
+
 class TestNodeAttrs(mixins.Slapd, unittest.TestCase):
     ENTRIES = {
         'cn=cn0,o=o': (('objectClass', ['organizationalRole']),
@@ -17,8 +18,10 @@ class TestNodeAttrs(mixins.Slapd, unittest.TestCase):
         node = self.dir['cn=cn0,o=o']
         self.assertEqual(node.attrs['cn'], ['cn0'])
         self.assertEqual(node.attrs['objectClass'], ['organizationalRole'])
+
         def fail():
             node.attrs['fail']
+
         self.assertRaises(KeyError, fail)
 
     def test_contains(self):
@@ -68,7 +71,7 @@ class TestNodeAttrs(mixins.Slapd, unittest.TestCase):
     def test_items(self):
         node = self.dir['cn=cn0,o=o']
         self.assertEqual(dict(self.ENTRIES['cn=cn0,o=o']).items(),
-                              node.attrs.items())
+                         node.attrs.items())
 
     def test_copy(self):
         node = self.dir['cn=cn0,o=o']

@@ -2,6 +2,7 @@ from unittest import TestCase
 
 from dicttree.ldap._node import Node
 
+
 class BadNode(Node):
     """Ignores name and returns an ever incrementing name
     """
@@ -11,6 +12,7 @@ class BadNode(Node):
     def name(self):
         self.counter += 1
         return str(self.counter)
+
     @name.setter
     def name(self, x):
         pass
@@ -49,8 +51,8 @@ class TestNode(TestCase):
     def test_attrs_equality(self):
         node1 = Node(name='name', attrs=(('a', '1'), ('b', '2')))
         node2 = Node(name='name', attrs=(('a', '1'), ('b', '2')))
-        more =  Node(name='name', attrs=(('a', '1'), ('b', '2'), ('c', '3')))
-        less =  Node(name='name', attrs=(('a', '1'),))
+        more = Node(name='name', attrs=(('a', '1'), ('b', '2'), ('c', '3')))
+        less = Node(name='name', attrs=(('a', '1'),))
         other = Node(name='name', attrs=(('a', '2'), ('b', '1')))
         order = Node(name='name', attrs=(('b', '2'), ('a', '1')))
 

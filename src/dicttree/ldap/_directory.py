@@ -1,3 +1,4 @@
+import copy
 import ldap
 
 from ldap import SCOPE_BASE
@@ -10,7 +11,6 @@ from dicttree.ldap._views import KeysView
 from dicttree.ldap._views import ItemsView
 from dicttree.ldap._views import ValuesView
 
-import copy
 
 class Directory(object):
     """XXX: this could be without base_dn, not supporting iteration

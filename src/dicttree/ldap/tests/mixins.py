@@ -3,7 +3,6 @@ import os
 import shutil
 import subprocess
 import sys
-import tempfile
 import time
 import traceback
 import urllib
@@ -41,7 +40,8 @@ Error setting up testcase: %s
         datadir = '/'.join([self.basedir, 'data'])
         os.mkdir(datadir)
 
-        shutil.copytree('etc/openldap/schema', '/'.join([self.basedir, 'schema']))
+        shutil.copytree('etc/openldap/schema',
+                        '/'.join([self.basedir, 'schema']))
 
         # start ldap server
         self.slapdbin = os.path.abspath("nixenv/libexec/slapd")
@@ -51,7 +51,8 @@ Error setting up testcase: %s
         self.loglevel = os.environ.get('SLAPD_LOGLEVEL', '0')
         self.debug = bool(os.environ.get('DEBUG'))
         self.debugflags = tuple(itertools.chain.from_iterable(
-                iter(('-d', x)) for x in self.loglevel.split(',')))
+            iter(('-d', x)) for x in self.loglevel.split(',')
+        ))
         self.slapd = subprocess.Popen(
             (self.slapdbin,
              "-f", self.slapdconf,
@@ -96,4 +97,3 @@ Error setting up testcase: %s
         successful = sys.exc_info() == (None, None, None)
         if successful or not os.environ['KEEP_FAILED']:
             shutil.rmtree(self.basedir)
-

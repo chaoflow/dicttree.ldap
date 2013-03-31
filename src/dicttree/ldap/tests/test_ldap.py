@@ -4,13 +4,6 @@ import unittest
 from dicttree.ldap._node import Node
 from dicttree.ldap.tests import mixins
 
-class TestLdapConnectivity(mixins.Slapd, unittest.TestCase):
-    """A simple test to ensure ldap is running and binding works
-    """
-    def test_connectivity(self):
-        self.ldap.bind_s('cn=root,o=o', 'secret')
-        self.assertEqual(self.ldap.whoami_s(), 'dn:cn=root,o=o')
-
 
 class TestLDAPDirectory(mixins.Slapd, unittest.TestCase):
     ENTRIES = {
@@ -18,11 +11,11 @@ class TestLDAPDirectory(mixins.Slapd, unittest.TestCase):
                        ('objectClass', ['organizationalRole'])),
         'cn=cn1,o=o': (('cn', 'cn1'),
                        ('objectClass', ['organizationalRole'])),
-        }
+    }
     ADDITIONAL = {
         'cn=cn2,o=o': (('cn', ['cn2']),
                        ('objectClass', ['organizationalRole'])),
-        }
+    }
 
     def test_contains(self):
         self.assertTrue('cn=cn0,o=o' in self.dir)
@@ -46,8 +39,10 @@ class TestLDAPDirectory(mixins.Slapd, unittest.TestCase):
         dn2 = 'cn=cn0,o=o'
         node2 = Node(name=dn2, attrs={'objectClass': ['applicationProcess'],
                                       'cn': ['cn0']})
+
         def addnode():
             self.dir[dn] = node
+
         def addexisting():
             self.dir[dn2] = node2
 
@@ -88,11 +83,13 @@ class TestLDAPDirectory(mixins.Slapd, unittest.TestCase):
 
         dn1 = 'cn=cn0,o=o'
         node1 = Node(name=dn1, attrs=self.ENTRIES[dn1])
+
         def addnode1():
             self.dir[dn1] = node1
 
         dn2 = 'cn=cn2,o=o'
         node2 = Node(name=dn2, attrs=self.ADDITIONAL[dn2])
+
         def addnode2():
             self.dir[dn2] = node2
 
@@ -167,7 +164,7 @@ class TestLDAPDirectory(mixins.Slapd, unittest.TestCase):
                                     ['applicationProcess'], 'cn': ['cn0']})
         dn2 = 'cn=cn2,o=o'
         node2 = Node(name=dn2, attrs={'objectClass':
-                                      ['organizationalRole'], 'cn': ['cn2']} )
+                                      ['organizationalRole'], 'cn': ['cn2']})
         itemList = [(node.name, node), (node2.name, node2)]
         dir2 = dict(itemList)
 

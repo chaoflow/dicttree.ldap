@@ -8,8 +8,7 @@ from dicttree.ldap.tests import mixins
 
 
 #XXX remove imports
-import collections
-import ipdb
+#import collections
 
 
 class TestKeysView(mixins.Slapd, unittest.TestCase):
@@ -18,11 +17,11 @@ class TestKeysView(mixins.Slapd, unittest.TestCase):
                        ('objectClass', ['organizationalRole'])),
         'cn=cn1,o=o': (('cn', 'cn1'),
                        ('objectClass', ['organizationalRole'])),
-        }
+    }
     ADDITIONAL = {
         'cn=cn2,o=o': (('cn', ['cn2']),
                        ('objectClass', ['organizationalRole'])),
-        }
+    }
 
     def test_viewlen(self):
         def delete():
@@ -30,11 +29,13 @@ class TestKeysView(mixins.Slapd, unittest.TestCase):
 
         dn1 = 'cn=cn0,o=o'
         node1 = Node(name=dn1, attrs=self.ENTRIES[dn1])
+
         def addnode1():
             self.dir[dn1] = node1
 
         dn2 = 'cn=cn2,o=o'
         node2 = Node(name=dn2, attrs=self.ADDITIONAL[dn2])
+
         def addnode2():
             self.dir[dn2] = node2
 
@@ -52,7 +53,7 @@ class TestKeysView(mixins.Slapd, unittest.TestCase):
         self.assertFalse(self.ENTRIES.keys() != keys)
 
         del self.dir['cn=cn0,o=o']
-        keys= self.dir.keys()
+        keys = self.dir.keys()
         items = self.dir.items()
         values = self.dir.values()
         self.assertTrue(self.ENTRIES.keys() != keys)
@@ -139,11 +140,13 @@ class TestItemsView(mixins.Slapd, unittest.TestCase):
 
         dn1 = 'cn=cn0,o=o'
         node1 = Node(name=dn1, attrs=self.ENTRIES[dn1])
+
         def addnode1():
             self.dir[dn1] = node1
 
         dn2 = 'cn=cn2,o=o'
         node2 = Node(name=dn2, attrs=self.ADDITIONAL[dn2])
+
         def addnode2():
             self.dir[dn2] = node2
 
@@ -359,11 +362,13 @@ class TestValuessView(mixins.Slapd, unittest.TestCase):
 
         dn1 = 'cn=cn0,o=o'
         node1 = Node(name=dn1, attrs=self.ENTRIES[dn1])
+
         def addnode1():
             self.dir[dn1] = node1
 
         dn2 = 'cn=cn2,o=o'
         node2 = Node(name=dn2, attrs=self.ADDITIONAL[dn2])
+
         def addnode2():
             self.dir[dn2] = node2
 
