@@ -24,6 +24,8 @@ bootstrap: dev.nix requirements.txt setup.py
 	./bin/pip install -r requirements.txt --no-index -f ""
 	./bin/easy_install -H "" ipython
 	./bin/easy_install -H "" ipdb
+	./bin/easy_install -H "" flake8
+	./bin/easy_install -H "" pylint
 
 bin/nosetests:
 	./bin/easy_install -H "" nose
