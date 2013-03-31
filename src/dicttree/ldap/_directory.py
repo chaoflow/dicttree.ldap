@@ -106,8 +106,7 @@ class Directory(object):
         if not self:
             raise KeyError
         dn = next(iter(self))
-        node = self[dn]
-        del self[dn]
+        node = self.pop(dn)
         return (dn, node)
 
     def setdefault(self, dn, default=None):
