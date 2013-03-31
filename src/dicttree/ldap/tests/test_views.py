@@ -19,10 +19,10 @@ class TestKeysView(TestCase):
 
     def setUp(self):
         super(TestKeysView, self).setUp()
-        self.keys = KeysView(directory=self.dir)
-        self.keysEqual = KeysView(directory=self.dirEqual)
-        self.keysSimilar = KeysView(directory=self.dirSimilar)
-        self.keysDifferent = KeysView(directory=self.dirDifferent)
+        self.keys = KeysView(self.dir)
+        self.keysEqual = KeysView(self.dirEqual)
+        self.keysSimilar = KeysView(self.dirSimilar)
+        self.keysDifferent = KeysView(self.dirDifferent)
 
 
     def test_equal(self):
@@ -77,10 +77,10 @@ class TestItemsView(TestCase):
 
     def setUp(self):
         super(TestItemsView, self).setUp()
-        self.items = ItemsView(directory=self.dir)
-        self.itemsEqual = ItemsView(directory=self.dirEqual)
-        self.itemsSimilar = ItemsView(directory=self.dirSimilar)
-        self.itemsDifferent = ItemsView(directory=self.dirDifferent)
+        self.items = ItemsView(self.dir)
+        self.itemsEqual = ItemsView(self.dirEqual)
+        self.itemsSimilar = ItemsView(self.dirSimilar)
+        self.itemsDifferent = ItemsView(self.dirDifferent)
 
 
     def test_equal(self):
@@ -137,10 +137,10 @@ class TestItemsView(TestCase):
 class TestValuesView(TestCase):
     def setUp(self):
         super(TestValuesView, self).setUp()
-        self.values = ValuesView(directory=self.dir)
-        self.valuesEqual = ValuesView(directory=self.dirEqual)
-        self.valuesSimilar = ValuesView(directory=self.dirSimilar)
-        self.valuesDifferent = ValuesView(directory=self.dirDifferent)
+        self.values = ValuesView(self.dir)
+        self.valuesEqual = ValuesView(self.dirEqual)
+        self.valuesSimilar = ValuesView(self.dirSimilar)
+        self.valuesDifferent = ValuesView(self.dirDifferent)
 
 
     def test_equal(self):

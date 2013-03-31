@@ -68,13 +68,13 @@ class Directory(object):
                 yield data
 
     def items(self):
-        return ItemsView(directory=self)
+        return ItemsView(self)
 
     def keys(self):
-        return KeysView(directory=self)
+        return KeysView(self)
 
     def values(self):
-        return ValuesView(directory=self)
+        return ValuesView(self)
 
     def __len__(self):
         return sum(1 for node in iter(self))

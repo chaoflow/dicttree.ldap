@@ -88,7 +88,7 @@ class TestKeysView(mixins.Slapd, unittest.TestCase):
 
     def test_xor(self):
         dn2 = 'cn=cn2,o=o'
-        testKeys = KeysView(directory=self.ENTRIES)
+        testKeys = KeysView(self.ENTRIES)
         keysResult = set([dn2])
         self.dir[dn2] = Node(name=dn2, attrs=self.ADDITIONAL[dn2])
 
@@ -103,7 +103,7 @@ class TestKeysView(mixins.Slapd, unittest.TestCase):
     def test_sub(self):
         dn2 = 'cn=cn2,o=o'
         self.dir[dn2] = Node(name=dn2, attrs=self.ADDITIONAL[dn2])
-        testKeys = KeysView(directory=self.ENTRIES)
+        testKeys = KeysView(self.ENTRIES)
         keysResult = set([dn2])
 
         keys = self.dir.keys()
@@ -115,7 +115,7 @@ class TestKeysView(mixins.Slapd, unittest.TestCase):
 
     def test_isdisjoint(self):
         keys = self.dir.keys()
-        testKeys = KeysView(directory=self.ADDITIONAL)
+        testKeys = KeysView(self.ADDITIONAL)
 
         self.assertFalse(keys.isdisjoint(keys))
         self.assertTrue(keys.isdisjoint(testKeys))
@@ -230,10 +230,10 @@ class TestItemsView(mixins.Slapd, unittest.TestCase):
 
     def test_xor(self):
         dn2 = 'cn=cn2,o=o'
-        testKeys = KeysView(directory=self.ENTRIES)
+        testKeys = KeysView(self.ENTRIES)
         mockDir = MockDirectory(self.ENTRIES)
         mockDir.base_dn = ''
-        testItems = ItemsView(directory=mockDir)
+        testItems = ItemsView(mockDir)
         itemsResult = set([(dn2, Node(name=dn2))])
         self.dir[dn2] = Node(name=dn2, attrs=self.ADDITIONAL[dn2])
 
@@ -256,12 +256,12 @@ class TestItemsView(mixins.Slapd, unittest.TestCase):
 
         mockDir = MockDirectory(self.ENTRIES)
         mockDir.base_dn = ''
-        testItems = ItemsView(directory=mockDir)
+        testItems = ItemsView(mockDir)
         #mockDir2 = MockDirectory({'a': (('a1', ['x1']),
         #                                ('aa1', ['xx1']))})
         mockDir2 = MockDirectory(self.ENTRIES)
         mockDir2.base_dn = ''
-        testItems2 = ItemsView(directory=mockDir2)
+        testItems2 = ItemsView(mockDir2)
 
         dn1 = 'cn=cn1,o=o'
         #itemsResult = set([(dn1,
@@ -309,7 +309,7 @@ class TestItemsView(mixins.Slapd, unittest.TestCase):
         items = self.dir.items()
         mockDir = MockDirectory(self.ADDITIONAL)
         mockDir.base_dn = ''
-        testItems = ItemsView(directory=mockDir)
+        testItems = ItemsView(mockDir)
 
         self.assertFalse(items.isdisjoint(items))
         self.assertTrue(items.isdisjoint(testItems))
