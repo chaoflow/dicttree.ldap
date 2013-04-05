@@ -44,7 +44,7 @@ Error setting up testcase: %s
                         '/'.join([self.basedir, 'schema']))
 
         # start ldap server
-        self.slapdbin = os.path.abspath("nixenv/libexec/slapd")
+        self.slapdbin = os.path.abspath("profile/libexec/slapd")
         self.slapdconf = os.path.abspath("etc/openldap/slapd.conf")
         self.uri = 'ldapi://' + \
             urllib.quote('/'.join([self.basedir, 'ldapi']), safe='')
