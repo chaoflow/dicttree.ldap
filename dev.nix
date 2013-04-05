@@ -4,7 +4,7 @@
 with import <nixpkgs> {};
 
 buildEnv {
-  name = "dicttree-ldap-dev-env";
+  name = "dev-env";
   paths = [
     (openldap.override { cyrus_sasl = null; openssl = null; })
     python27

@@ -18,9 +18,9 @@ export KEEP_FAILED := 1
 all: check
 
 bootstrap: dev.nix requirements.txt setup.py
-	nix-build --out-link nixenv dev.nix
-	./nixenv/bin/virtualenv --distribute --clear .
-	echo ../../../nixenv/lib/python2.7/site-packages > lib/python2.7/site-packages/nixenv.pth
+	nix-env -p profile -i dev-env -f dev.nix
+	./profile/bin/virtualenv --distribute --clear .
+	echo ../../../profile/lib/python2.7/site-packages > lib/python2.7/site-packages/nixprofile.pth
 	./bin/pip install -r requirements.txt --no-index -f ""
 	./bin/easy_install -H "" ipython
 	./bin/easy_install -H "" ipdb
@@ -57,6 +57,6 @@ pyoc-clean:
 
 update-ldap-schema:
 	mkdir -p etc/openldap/schema
-	cp nixenv/etc/openldap/schema/* etc/openldap/schema/
+	cp profile/etc/openldap/schema/* etc/openldap/schema/
 
 .PHONY: all bootstrap check coverage print-syspath pyoc-clean test-nose var var-clean
