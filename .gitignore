@@ -21,6 +21,6 @@
 /lib
 /man
 /nixenv
-/profile*
+/nixprofile*
 /parts
 /var
