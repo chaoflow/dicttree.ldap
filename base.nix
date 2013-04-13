@@ -16,6 +16,7 @@ let
       python26Packages.pylint
       python26Packages.recursivePthLoader
       python26Packages.sqlite3
+      python26Packages.unittest2
       python26Packages.virtualenv
     ] ++ lib.attrValues python26.modules;
 

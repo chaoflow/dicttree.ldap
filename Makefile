@@ -1,5 +1,15 @@
 LOCALISED_SCRIPTS = ipython ipdb flake8 pylint nose
 PROJECT = $(shell basename $(shell pwd))
+
+PYTHON_VERSION = 2.6
+NIX_PROFILE = ./nixprofile${PYTHON_VERSION}
+NIX_SITE = ${NIX_PROFILE}/lib/python${PYTHON_VERSION}/site-packages
+VENV_CMD = ${NIX_PROFILE}/bin/virtualenv
+VENV = .
+VENV_SITE = ${VENV}/lib/python${PYTHON_VERSION}/site-packages
+NOSETESTS = NIX_PROFILE=${NIX_PROFILE} ${VENV}/bin/nosetests
+
+
 # loglevels for SLAPD_LOGLEVEL, comma-separated
 # 1      (0x1 trace) trace function calls
 # 2      (0x2 packets) debug packet handling
@@ -20,13 +30,14 @@ export KEEP_FAILED := 1
 all: check
 
 bootstrap: dev.nix requirements.txt setup.py
-	nix-env -p nixprofile -i dev-env -f dev.nix
-	./nixprofile/bin/virtualenv --distribute --clear .
-	echo ../../../nixprofile/lib/python2.7/site-packages > lib/python2.7/site-packages/nixprofile.pth
-	./bin/pip install -r requirements.txt --no-index -f ""
+	nix-env -p ${NIX_PROFILE} -i dev-env -f dev${PYTHON_VERSION}.nix
+	${VENV_CMD} --distribute --clear .
+	realpath --no-symlinks --relative-to ${VENV_SITE} ${NIX_SITE} > ${VENV_SITE}/nixprofile.pth
+	${VENV}/bin/pip install -r requirements.txt --no-index -f ""
+	for script in ${LOCALISED_SCRIPTS}; do ${VENV}/bin/easy_install -H "" $$script; done
 
 print-syspath:
-	./bin/python -c 'import sys,pprint;pprint.pprint(sys.path)'
+	${VENV}/bin/python -c 'import sys,pprint;pprint.pprint(sys.path)'
 
 
 var:
@@ -37,14 +48,14 @@ var-clean:
 	rm -fR var/*
 
 check: var var-clean
-	./bin/nosetests -v -w . --processes=4 ${ARGS}
+	${NOSETESTS} -v -w . --processes=4 ${ARGS}
 
 check-debug: var var-clean
-	DEBUG=1 ./bin/nosetests -v -w . --ipdb --ipdb-failures ${ARGS}
+	DEBUG=1 ${NOSETESTS} -v -w . --ipdb --ipdb-failures ${ARGS}
 
 coverage: var var-clean
 	rm -f .coverage
-	./bin/nosetests -v -w . --with-cov --cover-branches --cover-package=${PROJECT} ${ARGS}
+	${NOSETESTS} -v -w . --with-cov --cover-branches --cover-package=${PROJECT} ${ARGS}
 
 
 pyoc-clean:
@@ -52,6 +63,6 @@ pyoc-clean:
 
 update-ldap-schema:
 	mkdir -p etc/openldap/schema
-	cp nixprofile/etc/openldap/schema/* etc/openldap/schema/
+	cp ${NIX_PROFILE}/etc/openldap/schema/* etc/openldap/schema/
 
 .PHONY: all bootstrap check coverage print-syspath pyoc-clean test-nose var var-clean
