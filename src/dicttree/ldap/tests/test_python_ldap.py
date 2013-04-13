@@ -1,7 +1,7 @@
 import ldap
-import unittest
 
 from dicttree.ldap.tests import mixins
+from dicttree.ldap.tests import unittest
 
 
 class TestAttrlistAttrsonly(mixins.Slapd, unittest.TestCase):

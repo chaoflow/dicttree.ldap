@@ -1,8 +1,7 @@
-import unittest
-
 from dicttree.ldap._views import KeysView
 from dicttree.ldap._views import ItemsView
 from dicttree.ldap._views import ValuesView
+from dicttree.ldap.tests import unittest
 
 
 class TestCase(unittest.TestCase):

@@ -1,10 +1,10 @@
 import ldap
-import unittest
 
 from dicttree.ldap._node import Node
 from dicttree.ldap._views import KeysView
 from dicttree.ldap._views import ItemsView
 from dicttree.ldap.tests import mixins
+from dicttree.ldap.tests import unittest
 
 
 #XXX remove imports

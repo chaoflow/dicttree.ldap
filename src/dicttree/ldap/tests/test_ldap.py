@@ -1,8 +1,8 @@
 import ldap
-import unittest
 
 from dicttree.ldap._node import Node
 from dicttree.ldap.tests import mixins
+from dicttree.ldap.tests import unittest
 
 
 class TestLDAPDirectory(mixins.Slapd, unittest.TestCase):

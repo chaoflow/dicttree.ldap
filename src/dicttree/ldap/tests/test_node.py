@@ -1,6 +1,5 @@
-from unittest import TestCase
-
 from dicttree.ldap._node import Node
+from dicttree.ldap.tests import unittest
 
 
 class BadNode(Node):
@@ -18,7 +17,7 @@ class BadNode(Node):
         pass
 
 
-class TestBadNode(TestCase):
+class TestBadNode(unittest.TestCase):
     def test_never_the_same_name(self):
         node = BadNode()
         self.assertEqual(node.name, '1')
@@ -26,7 +25,7 @@ class TestBadNode(TestCase):
         self.assertNotEqual(node.name, node.name)
 
 
-class TestNode(TestCase):
+class TestNode(unittest.TestCase):
     def test_repr(self):
         node = Node(name='a')
         self.assertEqual('<ldap node dn="a">', repr(node))
