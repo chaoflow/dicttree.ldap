@@ -1,3 +1,5 @@
+LOCALISED_SCRIPTS = ipython ipdb flake8 pylint nose
+PROJECT = $(shell basename $(shell pwd))
 # loglevels for SLAPD_LOGLEVEL, comma-separated
 # 1      (0x1 trace) trace function calls
 # 2      (0x2 packets) debug packet handling
@@ -22,13 +24,6 @@ bootstrap: dev.nix requirements.txt setup.py
 	./nixprofile/bin/virtualenv --distribute --clear .
 	echo ../../../nixprofile/lib/python2.7/site-packages > lib/python2.7/site-packages/nixprofile.pth
 	./bin/pip install -r requirements.txt --no-index -f ""
-	./bin/easy_install -H "" ipython
-	./bin/easy_install -H "" ipdb
-	./bin/easy_install -H "" flake8
-	./bin/easy_install -H "" pylint
-
-bin/nosetests:
-	./bin/easy_install -H "" nose
 
 print-syspath:
 	./bin/python -c 'import sys,pprint;pprint.pprint(sys.path)'
@@ -36,20 +31,20 @@ print-syspath:
 
 var:
 	test -L var -a ! -e var && rm var || true
-	ln -s $(shell mktemp --tmpdir -d dicttree.ldap-var-XXXXXXXXXX) var
+	ln -s $(shell mktemp --tmpdir -d ${PROJECT}-var-XXXXXXXXXX) var
 
 var-clean:
 	rm -fR var/*
 
-check: var var-clean bin/nosetests
+check: var var-clean
 	./bin/nosetests -v -w . --processes=4 ${ARGS}
 
-check-debug: var var-clean bin/nosetests
+check-debug: var var-clean
 	DEBUG=1 ./bin/nosetests -v -w . --ipdb --ipdb-failures ${ARGS}
 
-coverage: var var-clean bin/nosetests
+coverage: var var-clean
 	rm -f .coverage
-	./bin/nosetests -v -w . --with-cov --cover-branches --cover-package=dicttree.ldap ${ARGS}
+	./bin/nosetests -v -w . --with-cov --cover-branches --cover-package=${PROJECT} ${ARGS}
 
 
 pyoc-clean:
