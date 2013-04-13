@@ -12,7 +12,7 @@ from ldap.ldapobject import LDAPObject
 from dicttree.ldap import Directory
 
 # required environment variables
-SLAPD = os.environ['SLAPD']
+SLAPD = os.environ.get('SLAPD') # if not set, quite some tests will be skipped
 
 # optional environment variables
 DEBUG = bool(os.environ.get('DEBUG'))
@@ -22,6 +22,8 @@ SLAPD_LOGLEVEL = os.environ.get('SLAPD_LOGLEVEL', '0')
 
 class Slapd(object):
     def setUp(self):
+        if not SLAPD:
+            self.skipTest('Skipped as no SLAPD was provided')
         try:
             self._setUp()
         except Exception, e:
