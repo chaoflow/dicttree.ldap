@@ -11,6 +11,11 @@ from ldap.ldapobject import LDAPObject
 
 from dicttree.ldap import Directory
 
+# optional environment variables
+DEBUG = bool(os.environ.get('DEBUG'))
+KEEP_FAILED = bool(os.environ.get('KEEP_FAILED'))
+SLAPD_LOGLEVEL = os.environ.get('SLAPD_LOGLEVEL', '0')
+
 
 class Slapd(object):
     def setUp(self):
@@ -48,8 +53,11 @@ Error setting up testcase: %s
         self.slapdconf = os.path.abspath("etc/openldap/slapd.conf")
         self.uri = 'ldapi://' + \
             urllib.quote('/'.join([self.basedir, 'ldapi']), safe='')
-        self.loglevel = os.environ.get('SLAPD_LOGLEVEL', '0')
-        self.debug = bool(os.environ.get('DEBUG'))
+        self.loglevel = SLAPD_LOGLEVEL
+
+        # enable setting debug per testcase
+        if getattr(self, 'DEBUG', None) is None:
+            self.DEBUG = DEBUG
         self.debugflags = tuple(itertools.chain.from_iterable(
             iter(('-d', x)) for x in self.loglevel.split(',')
         ))
@@ -59,8 +67,8 @@ Error setting up testcase: %s
              "-s", "0",
              "-h", "ldapi://ldapi") + self.debugflags,
             cwd=self.basedir,
-            stdout=subprocess.PIPE if not self.debug else None,
-            stderr=subprocess.PIPE if not self.debug else None)
+            stdout=subprocess.PIPE if not self.DEBUG else None,
+            stderr=subprocess.PIPE if not self.DEBUG else None)
 
         # wait for ldap to appear
         waited = 0
@@ -95,5 +103,5 @@ Error setting up testcase: %s
         self.slapd.kill()
         self.slapd.wait()
         successful = sys.exc_info() == (None, None, None)
-        if successful or not os.environ['KEEP_FAILED']:
+        if successful or not KEEP_FAILED:
             shutil.rmtree(self.basedir)
