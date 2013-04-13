@@ -12,7 +12,7 @@ from ldap.ldapobject import LDAPObject
 from dicttree.ldap import Directory
 
 # required environment variables
-NIX_PROFILE = os.environ['NIX_PROFILE']
+SLAPD = os.environ['SLAPD']
 
 # optional environment variables
 DEBUG = bool(os.environ.get('DEBUG'))
@@ -52,7 +52,7 @@ Error setting up testcase: %s
                         '/'.join([self.basedir, 'schema']))
 
         # start ldap server
-        self.slapdbin = os.path.abspath(NIX_PROFILE + '/libexec/slapd')
+        self.slapdbin = os.path.abspath(SLAPD)
         self.slapdconf = os.path.abspath("etc/openldap/slapd.conf")
         self.uri = 'ldapi://' + \
             urllib.quote('/'.join([self.basedir, 'ldapi']), safe='')

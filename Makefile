@@ -7,7 +7,8 @@ NIX_SITE = ${NIX_PROFILE}/lib/python${PYTHON_VERSION}/site-packages
 VENV_CMD = ${NIX_PROFILE}/bin/virtualenv
 VENV = .
 VENV_SITE = ${VENV}/lib/python${PYTHON_VERSION}/site-packages
-NOSETESTS = NIX_PROFILE=${NIX_PROFILE} ${VENV}/bin/nosetests
+SLAPD = ${NIX_PROFILE}/libexec/slapd
+NOSETESTS = SLAPD=${SLAPD} ${VENV}/bin/nosetests
 
 
 # loglevels for SLAPD_LOGLEVEL, comma-separated
