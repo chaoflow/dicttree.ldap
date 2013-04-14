@@ -136,4 +136,4 @@ class Directory(object):
                 if x[0][0] != self.base_dn)
 
     def iteritems(self):
-        return ((node.name, node) for node in ValuesView(self))
+        return ((node.name, node) for node in self.itervalues())
