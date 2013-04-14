@@ -13,7 +13,7 @@ except ImportError:
 class Attributes(object):
     def __init__(self, dn=None, attrs=(), ldap=None):
         self.dn = dn
-        self.attrs = attrs
+        self.attrs = OrderedDict(attrs)
         self._ldap = ldap
 
     def __contains__(self, name):
@@ -115,6 +115,22 @@ class Attributes(object):
         return None
 
 
+class CachedAttributes(Attributes):
+    def __getitem__(self, key):
+        try:
+            value = self.attrs[key]
+        except KeyError:
+            _next = super(CachedAttributes, self).__getitem__
+            value = _next(key)
+            self.attrs[key] = value
+        return value
+
+    def __setitem__(self, key, value):
+        _next = super(CachedAttributes, self).__setitem__
+        _next(key, value)
+        self.attrs[key] = value
+
+
 class Node(object):
     def __init__(self, name=None, attrs=(), ldap=None):
         self.name = name
@@ -123,7 +139,7 @@ class Node(object):
         # order from an ldif file, which would mean patching
         # python-ldap would give us order. Needs to be investigated.
         #self.attrs = OrderedDict(attrs)
-        self.attrs = Attributes(dn=name, attrs=attrs, ldap=ldap)
+        self.attrs = CachedAttributes(dn=name, attrs=attrs, ldap=ldap)
         self._ldap = ldap
 
     def __eq__(self, other):
