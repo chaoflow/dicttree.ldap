@@ -50,15 +50,16 @@ class Directory(object):
             raise KeyError(dn)
 
     def __iter__(self):
-        return (x[0][0] for x in
-                self._search(self.base_dn, scope.SUBTREE)
-                if x[0][0] != self.base_dn)
+        return (x[0][0] for x in self._search())
 
-    def _search(self, base, scope, filterstr='(objectClass=*)', attrlist=None,
+    def _search(self, base=None, scope=scope.SUBTREE,
+                filterstr=None, attrlist=None,
                 timeout=-1):
         """asynchronous ldap search returning a generator
         """
-        msgid = self._ldap.search(base, scope,
+        base = base or self.base_dn
+        filterstr = str(filterstr or '(objectClass=*)')
+        msgid = self._ldap.search(base=base, scope=scope,
                                   filterstr=filterstr, attrlist=attrlist)
         rtype = ldap.RES_SEARCH_ENTRY
         while rtype is ldap.RES_SEARCH_ENTRY:
@@ -67,7 +68,8 @@ class Directory(object):
             (rtype, data) = self._ldap.result(msgid=msgid, all=0,
                                               timeout=timeout)
             if rtype is ldap.RES_SEARCH_ENTRY or data:
-                yield data
+                if data[0][0] != self.base_dn:
+                    yield data
 
     def items(self):
         return ItemsView(self)
@@ -131,9 +133,7 @@ class Directory(object):
 
     def itervalues(self):
         return (self.Node(name=x[0][0], attrs=x[0][1], ldap=self._ldap) for x in
-                self._search(base=self.base_dn, scope=scope.SUBTREE,
-                             attrlist=[''])
-                if x[0][0] != self.base_dn)
+                self._search(scope=scope.SUBTREE, attrlist=['']))
 
     def iteritems(self):
         return ((node.name, node) for node in self.itervalues())
