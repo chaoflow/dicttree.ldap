@@ -13,6 +13,8 @@ from dicttree.ldap._views import ValuesView
 class Directory(object):
     """XXX: this could be without base_dn, not supporting iteration
     """
+    Node = Node
+
     def __init__(self, uri, base_dn, bind_dn, bind_pw):
         self.base_dn = base_dn
         self._ldap = LDAPObject(uri)
@@ -30,7 +32,7 @@ class Directory(object):
             entry = self._ldap.search_s(dn, scope.BASE)[0]
         except ldap.NO_SUCH_OBJECT:
             raise KeyError(dn)
-        node = Node(name=dn, attrs=entry[1], ldap=self._ldap)
+        node = self.Node(name=dn, attrs=entry[1], ldap=self._ldap)
         return node
 
     def __setitem__(self, dn, node):
@@ -128,9 +130,9 @@ class Directory(object):
     iterkeys = __iter__
 
     def itervalues(self):
-        return (Node(name=x[0][0], attrs=x[0][1], ldap=self._ldap) for x in
-                self._search(self.base_dn,
-                             scope.SUBTREE, attrlist=[''])
+        return (self.Node(name=x[0][0], attrs=x[0][1], ldap=self._ldap) for x in
+                self._search(base=self.base_dn, scope=scope.SUBTREE,
+                             attrlist=[''])
                 if x[0][0] != self.base_dn)
 
     def iteritems(self):
