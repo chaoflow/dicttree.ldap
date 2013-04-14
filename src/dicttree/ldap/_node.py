@@ -122,8 +122,8 @@ class Node(object):
         # am under the impression that openldap preserves attribute
         # order from an ldif file, which would mean patching
         # python-ldap would give us order. Needs to be investigated.
-        self.attrs = OrderedDict(attrs)
-        #self.attrs = Attributes(dn=name, attrs=attrs, ldap=ldap)
+        #self.attrs = OrderedDict(attrs)
+        self.attrs = Attributes(dn=name, attrs=attrs, ldap=ldap)
         self._ldap = ldap
 
     def __eq__(self, other):
