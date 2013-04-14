@@ -4,6 +4,12 @@ import ldap
 from dicttree.ldap import scope
 
 
+try:
+    from collections import OrderedDict
+except ImportError:
+    from ordereddict import OrderedDict
+
+
 class Attributes(object):
     def __init__(self, dn=None, attrs=(), ldap=None):
         self.dn = dn
@@ -116,9 +122,8 @@ class Node(object):
         # am under the impression that openldap preserves attribute
         # order from an ldif file, which would mean patching
         # python-ldap would give us order. Needs to be investigated.
-        #self.attrs = OrderedDict(attrs)
-        #self.attrs = dict(attrs)
-        self.attrs = Attributes(dn=name, attrs=attrs, ldap=ldap)
+        self.attrs = OrderedDict(attrs)
+        #self.attrs = Attributes(dn=name, attrs=attrs, ldap=ldap)
         self._ldap = ldap
 
     def __eq__(self, other):
