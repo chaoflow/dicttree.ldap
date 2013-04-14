@@ -131,3 +131,6 @@ class Node(object):
 
     def __repr__(self):
         return '<ldap node dn="%s">' % (self.name,)
+
+    def iteritems(self):
+        return iter([])
