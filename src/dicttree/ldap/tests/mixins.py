@@ -102,7 +102,7 @@ Error setting up testcase: %s
         self.dir = Directory(uri=self.uri,
                              base_dn='o=o',
                              bind_dn='cn=root,o=o',
-                             pw='secret')
+                             bind_pw='secret')
 
     def tearDown(self):
         self.slapd.kill()

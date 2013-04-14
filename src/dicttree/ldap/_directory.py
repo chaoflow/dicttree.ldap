@@ -13,10 +13,10 @@ from dicttree.ldap._views import ValuesView
 class Directory(object):
     """XXX: this could be without base_dn, not supporting iteration
     """
-    def __init__(self, uri, base_dn, bind_dn, pw):
+    def __init__(self, uri, base_dn, bind_dn, bind_pw):
         self.base_dn = base_dn
         self._ldap = LDAPObject(uri)
-        self._ldap.bind_s(bind_dn, pw)
+        self._ldap.bind_s(bind_dn, bind_pw)
 
     def __contains__(self, dn):
         try:
