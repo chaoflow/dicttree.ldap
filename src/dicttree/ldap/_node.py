@@ -125,6 +125,22 @@ class CachedAttributes(Attributes):
             self.attrs[key] = value
         return value
 
+    def __delitem__(self, key):
+        try:
+            del self.attrs[key]
+        except KeyError:
+            pass
+        _next = super(CachedAttributes, self).__delitem__
+        _next(key)
+
+    def __contains__(self, key):
+        try:
+            value = key in self.attrs
+        except KeyError:
+            _next = super(CachedAttributes, self).__contains__
+            value = _next(key)
+        return value
+
     def __setitem__(self, key, value):
         _next = super(CachedAttributes, self).__setitem__
         _next(key, value)
