@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import sys, os
 
-version = '0dev'
+version = '0.1'
 shortdesc = 'Access ldap via a dictionary tree.'
 #longdesc = open(os.path.join(os.path.dirname(__file__), 'README.rst')).read()
 
