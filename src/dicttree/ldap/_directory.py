@@ -62,11 +62,24 @@ class Directory(object):
             raise KeyError(dn)
 
     def __iter__(self):
-        return (x[0][0] for x in self._search())
+        return (x[0] for x in self._search())
 
     def _search(self, base=None, scope=scope.SUBTREE,
                 filterstr=None, attrlist=None,
-                timeout=-1):
+                timeout=10):
+        """asynchronous ldap search returning a generator
+        """
+        base = base or self.base_dn
+        filterstr = str(filterstr or '(objectClass=*)')
+        return [x for x in
+                self.ldap.search_s(base=base, scope=scope,
+                                   filterstr=filterstr, attrlist=attrlist)
+                if x[0] != self.base_dn
+        ]
+
+    def _search_async(self, base=None, scope=scope.SUBTREE,
+                filterstr=None, attrlist=None,
+                timeout=10):
         """asynchronous ldap search returning a generator
         """
         base = base or self.base_dn
@@ -150,7 +163,7 @@ class Directory(object):
     iterkeys = __iter__
 
     def itervalues(self):
-        return (self.Node(name=x[0][0], attrs=x[0][1], directory=self) for x in
+        return (self.Node(name=x[0], attrs=x[1], directory=self) for x in
                 self._search(scope=scope.SUBTREE, attrlist=['']))
 
     def iteritems(self):
