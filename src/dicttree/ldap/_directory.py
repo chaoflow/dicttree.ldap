@@ -14,44 +14,47 @@ class Directory(object):
     """XXX: this could be without base_dn, not supporting iteration
     """
     Node = Node
+    _ldap = None
 
-    def __init__(self, uri, base_dn, bind_dn, bind_pw):
+    @property
+    def ldap(self):
+        if self._ldap is None:
+            self._ldap = ReconnectLDAPObject(self.uri)
+            self._ldap.bind_s(self.bind_dn, self.bind_pw)
+        return self._ldap
+
+    def __init__(self, uri=None, base_dn=None, bind_dn=None, bind_pw=None):
         self.base_dn = base_dn
         self.uri = uri
-        self.base_dn = base_dn
+        self.bind_dn = bind_dn
         self.bind_pw = bind_pw
-        self.connect()
-
-    def connect(self):
-        self._ldap = ReconnectLDAPObject(self.uri)
-        self._ldap.bind_s(self.bind_dn, self.bind_pw)
 
     def __contains__(self, dn):
         try:
-            return dn == self._ldap.search_s(dn, scope.BASE,
+            return dn == self.ldap.search_s(dn, scope.BASE,
                                              attrlist=[''])[0][0]
         except ldap.NO_SUCH_OBJECT:
             return False
 
     def __getitem__(self, dn):
         try:
-            entry = self._ldap.search_s(dn, scope.BASE)[0]
+            entry = self.ldap.search_s(dn, scope.BASE)[0]
         except ldap.NO_SUCH_OBJECT:
             raise KeyError(dn)
-        node = self.Node(name=dn, attrs=entry[1], ldap=self._ldap)
+        node = self.Node(name=dn, attrs=entry[1], ldap=self.ldap)
         return node
 
     def __setitem__(self, dn, node):
         addlist = node.attrs.items()
         try:
-            self._ldap.add_s(dn, addlist)
+            self.ldap.add_s(dn, addlist)
         except ldap.ALREADY_EXISTS:
             del self[dn]
-            self._ldap.add_s(dn, addlist)
+            self.ldap.add_s(dn, addlist)
 
     def __delitem__(self, dn):
         try:
-            self._ldap.delete_s(dn)
+            self.ldap.delete_s(dn)
         except ldap.NO_SUCH_OBJECT:
             raise KeyError(dn)
 
@@ -66,18 +69,18 @@ class Directory(object):
         base = base or self.base_dn
         filterstr = str(filterstr or '(objectClass=*)')
         try:
-            msgid = self._ldap.search(base=base, scope=scope,
+            msgid = self.ldap.search(base=base, scope=scope,
                                   filterstr=filterstr, attrlist=attrlist)
         except ldap.SERVER_DOWN:
             # Just retry once
-            self.connect()
-            msgid = self._ldap.search(base=base, scope=scope,
+            del self._ldap
+            msgid = self.ldap.search(base=base, scope=scope,
                                   filterstr=filterstr, attrlist=attrlist)
         rtype = ldap.RES_SEARCH_ENTRY
         while rtype is ldap.RES_SEARCH_ENTRY:
             # Fetch results single file, the final result (usually)
             # has an empty field. <sigh>
-            (rtype, data) = self._ldap.result(msgid=msgid, all=0,
+            (rtype, data) = self.ldap.result(msgid=msgid, all=0,
                                               timeout=timeout)
             if rtype is ldap.RES_SEARCH_ENTRY or data:
                 if data[0][0] != self.base_dn:
@@ -144,7 +147,7 @@ class Directory(object):
     iterkeys = __iter__
 
     def itervalues(self):
-        return (self.Node(name=x[0][0], attrs=x[0][1], ldap=self._ldap) for x in
+        return (self.Node(name=x[0][0], attrs=x[0][1], ldap=self.ldap) for x in
                 self._search(scope=scope.SUBTREE, attrlist=['']))
 
     def iteritems(self):
