@@ -1,7 +1,7 @@
 import copy
 import ldap
 
-from ldap.ldapobject import LDAPObject
+from ldap.ldapobject import ReconnectLDAPObject
 
 from dicttree.ldap import scope
 from dicttree.ldap._node import Node
@@ -17,6 +17,10 @@ class Directory(object):
 
     def __init__(self, uri, base_dn, bind_dn, bind_pw):
         self.base_dn = base_dn
+        self._ldap = ReconnectLDAPObject(uri)
+        self._ldap.bind_s(bind_dn, bind_pw)
+
+    def connect(self):
         self._ldap = LDAPObject(uri)
         self._ldap.bind_s(bind_dn, bind_pw)
 
@@ -59,7 +63,13 @@ class Directory(object):
         """
         base = base or self.base_dn
         filterstr = str(filterstr or '(objectClass=*)')
-        msgid = self._ldap.search(base=base, scope=scope,
+        try:
+            msgid = self._ldap.search(base=base, scope=scope,
+                                  filterstr=filterstr, attrlist=attrlist)
+        except ldap.SERVER_DOWN:
+            # Just retry once
+            self.connect()
+            msgid = self._ldap.search(base=base, scope=scope,
                                   filterstr=filterstr, attrlist=attrlist)
         rtype = ldap.RES_SEARCH_ENTRY
         while rtype is ldap.RES_SEARCH_ENTRY:
