@@ -18,6 +18,9 @@ class Directory(object):
 
     @property
     def ldap(self):
+        if self._ldap is not None:
+            if self._ldap.whoami_s() == '':
+                del self._ldap
         if self._ldap is None:
             self._ldap = ReconnectLDAPObject(self.uri)
             self._ldap.bind_s(self.bind_dn, self.bind_pw)
