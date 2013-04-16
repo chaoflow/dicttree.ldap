@@ -17,12 +17,14 @@ class Directory(object):
 
     def __init__(self, uri, base_dn, bind_dn, bind_pw):
         self.base_dn = base_dn
-        self._ldap = ReconnectLDAPObject(uri)
-        self._ldap.bind_s(bind_dn, bind_pw)
+        self.uri = uri
+        self.base_dn = base_dn
+        self.bind_pw = bind_pw
+        self.connect()
 
     def connect(self):
-        self._ldap = LDAPObject(uri)
-        self._ldap.bind_s(bind_dn, bind_pw)
+        self._ldap = ReconnectLDAPObject(self.uri)
+        self._ldap.bind_s(self.bind_dn, self.bind_pw)
 
     def __contains__(self, dn):
         try:
