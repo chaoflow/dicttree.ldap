@@ -11,18 +11,22 @@ except ImportError:
 
 
 class Attributes(object):
-    def __init__(self, dn=None, attrs=(), ldap=None):
+    @property
+    def ldap(self):
+        return self.node.ldap
+
+    def __init__(self, dn=None, attrs=(), node=None):
         self.dn = dn
         self.attrs = OrderedDict(attrs)
-        self._ldap = ldap
+        self.node = node
 
     def __contains__(self, name):
-        entry = self._ldap.search_s(self.dn, scope.BASE,
+        entry = self.ldap.search_s(self.dn, scope.BASE,
                                     attrlist=[name], attrsonly=True)[0]
         return len(entry[1]) > 0
 
     def __getitem__(self, name):
-        entry = self._ldap.search_s(self.dn, scope.BASE,
+        entry = self.ldap.search_s(self.dn, scope.BASE,
                                     attrlist=[name])[0]
         return entry[1][name]
 
@@ -30,12 +34,12 @@ class Attributes(object):
         action = ldap.MOD_ADD
         if name in self:
             action = ldap.MOD_REPLACE
-        self._ldap.modify_s(self.dn, [(action, name, value)])
+        self.ldap.modify_s(self.dn, [(action, name, value)])
 
     def __delitem__(self, name, value=None):
         """ delete attibutes value, if value is None
         deletes all values for given attribute name """
-        self._ldap.modify_s(self.dn, [(ldap.MOD_DELETE, name, value)])
+        self.ldap.modify_s(self.dn, [(ldap.MOD_DELETE, name, value)])
 
     def __iter__(self):
         return (item[0] for item in self._search())
@@ -43,7 +47,7 @@ class Attributes(object):
     def _search(self, attrlist=None):
         """ldap search returning a generator on attributes
         """
-        entry = self._ldap.search_s(self.dn, scope.BASE, attrlist=attrlist)
+        entry = self.ldap.search_s(self.dn, scope.BASE, attrlist=attrlist)
         for name in entry[0][1]:
             yield (name, entry[0][1][name])
 
@@ -148,15 +152,19 @@ class CachedAttributes(Attributes):
 
 
 class Node(object):
-    def __init__(self, name=None, attrs=(), ldap=None):
+    @property
+    def ldap(self):
+        return self.directory.ldap
+
+    def __init__(self, name=None, attrs=(), directory=None):
         self.name = name
         # python-ldap uses (unordered) dicts to return attributes. I
         # am under the impression that openldap preserves attribute
         # order from an ldif file, which would mean patching
         # python-ldap would give us order. Needs to be investigated.
         #self.attrs = OrderedDict(attrs)
-        self.attrs = CachedAttributes(dn=name, attrs=attrs, ldap=ldap)
-        self._ldap = ldap
+        self.attrs = CachedAttributes(dn=name, attrs=attrs, node=self)
+        self.directory = directory
 
     def __eq__(self, other):
         return self is other or \
