@@ -1,5 +1,6 @@
 from ldap import UNDEFINED_TYPE
 from ldap import PROTOCOL_ERROR
+
 from dicttree.ldap.tests import mixins
 from dicttree.ldap.tests import unittest
 from dicttree.ldap._node import Attributes
@@ -16,7 +17,9 @@ class TestNodeAttrs(mixins.Slapd, unittest.TestCase):
     def test_getitem(self):
         node = self.dir['cn=cn0,o=o']
         self.assertEqual(node.attrs['cn'], ['cn0'])
+        self.assertEqual(node['cn'], ['cn0'])
         self.assertEqual(node.attrs['objectClass'], ['organizationalRole'])
+        self.assertEqual(node['objectClass'], ['organizationalRole'])
 
         def fail():
             node.attrs['fail']
@@ -26,8 +29,11 @@ class TestNodeAttrs(mixins.Slapd, unittest.TestCase):
     def test_contains(self):
         node = self.dir['cn=cn0,o=o']
         self.assertTrue('cn' in node.attrs)
+        self.assertTrue('cn' in node)
         self.assertTrue('objectClass' in node.attrs)
+        self.assertTrue('objectClass' in node)
         self.assertFalse('fail' in node.attrs)
+        self.assertFalse('fail' in node)
 
     def test_iter(self):
         node = self.dir['cn=cn0,o=o']
@@ -38,6 +44,10 @@ class TestNodeAttrs(mixins.Slapd, unittest.TestCase):
         node.attrs['description'] = 'abc'
         self.assertItemsEqual(node.attrs, ['objectClass', 'cn', 'description'])
         del node.attrs['description']
+        self.assertItemsEqual(node.attrs, ['objectClass', 'cn'])
+        node['description'] = ['123']
+        self.assertEqual(node['description'], ['123'])
+        del node['description']
         self.assertItemsEqual(node.attrs, ['objectClass', 'cn'])
 
     def test_len(self):
@@ -52,6 +62,8 @@ class TestNodeAttrs(mixins.Slapd, unittest.TestCase):
         self.assertItemsEqual(node.attrs, ['objectClass', 'cn', 'description'])
         node.attrs['description'] = ['aaa']
         self.assertEqual(node.attrs['description'], ['aaa'])
+        node['description'] = ['123']
+        self.assertEqual(node['description'], ['123'])
 
     def test_equal(self):
         pass

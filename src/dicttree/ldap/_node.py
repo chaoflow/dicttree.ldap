@@ -179,3 +179,15 @@ class Node(object):
 
     def iteritems(self):
         return iter([])
+
+    def __contains__(self, key):
+        return key in self.attrs
+
+    def __getitem__(self, key):
+        return self.attrs[key]
+
+    def __setitem__(self, key, value):
+        self.attrs[key] = value
+
+    def __delitem__(self, key):
+        del self.attrs[key]

@@ -1,6 +1,7 @@
 from dicttree.ldap._node import Node
 from dicttree.ldap.tests import unittest
 
+import ipdb
 
 class BadNode(Node):
     """Ignores name and returns an ever incrementing name
