@@ -1,9 +1,10 @@
-{ python, pythonPackages }:
+{ python, pythonPackages, pythonDocs ? null }:
 
 with import <nixpkgs> {};
 
 {
   paths = [ python ] ++
+          (lib.optionals (pythonDocs != null) [ pythonDocs ]) ++
           (with pythonPackages;
            [
              argparse

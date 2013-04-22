@@ -7,6 +7,7 @@ let
   pythonPackages = python26Packages;
   base = import ./base.nix {
     inherit python pythonPackages;
+    pythonDocs = pythonDocs.html.python26;
   };
 in
 buildEnv {
