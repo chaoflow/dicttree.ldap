@@ -1,44 +1,24 @@
-{ }:
+{ python, pythonPackages }:
 
 with import <nixpkgs> {};
 
-let
-  base = {
-
-  paths26 =
-    [ python26
-      python26Packages.argparse
-      python26Packages.coverage
-      python26Packages.epc
-      python26Packages.flake8
-      python26Packages.ipdb
-      python26Packages.ipdbplugin
-      python26Packages.ipython
-      python26Packages.jedi
-      python26Packages.nose
-      python26Packages.pylint
-      python26Packages.recursivePthLoader
-      python26Packages.sqlite3
-      python26Packages.unittest2
-      python26Packages.virtualenv
-    ] ++ lib.attrValues python26.modules;
-
-  paths27 =
-    [ python27
-      python27Packages.argparse
-      python27Packages.coverage
-      python27Packages.epc
-      python27Packages.flake8
-      python27Packages.ipdb
-      python27Packages.ipdbplugin
-      python27Packages.ipython
-      python27Packages.jedi
-      python27Packages.nose
-      python27Packages.pylint
-      python27Packages.recursivePthLoader
-      python27Packages.sqlite3
-      python27Packages.unittest2
-      python27Packages.virtualenv
-    ] ++ lib.attrValues python27.modules;
-
-}; in base
+{
+  paths = [ python ] ++
+          (with pythonPackages;
+           [
+             argparse
+             coverage
+             epc
+             flake8
+             ipdb
+             ipdbplugin
+             ipython
+             jedi
+             nose
+             pylint
+             recursivePthLoader
+             sqlite3
+             unittest2
+             virtualenv
+           ]) ++ lib.attrValues python.modules;
+}

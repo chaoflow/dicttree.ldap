@@ -1,18 +1,20 @@
 { }:
 
-let
-  base = import ./base.nix { };
-
-in
-
 with import <nixpkgs> {};
 
+let
+  python = python27;
+  pythonPackages = python27Packages;
+  base = import ./base.nix {
+    inherit python pythonPackages;
+  };
+in
 buildEnv {
   name = "dev-env";
   ignoreCollisions = true;
   paths = [
     (openldap.override { cyrus_sasl = null; openssl = null; })
-    python27Packages.ldap
-    python27Packages.zope_interface
-  ] ++ base.paths27;
+    pythonPackages.ldap
+    pythonPackages.zope_interface
+  ] ++ base.paths;
 }
