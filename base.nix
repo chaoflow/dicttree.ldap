@@ -7,11 +7,14 @@ let
 
   paths26 =
     [ python26
+      python26Packages.argparse
       python26Packages.coverage
+      python26Packages.epc
       python26Packages.flake8
       python26Packages.ipdb
       python26Packages.ipdbplugin
       python26Packages.ipython
+      python26Packages.jedi
       python26Packages.nose
       python26Packages.pylint
       python26Packages.recursivePthLoader
@@ -22,15 +25,19 @@ let
 
   paths27 =
     [ python27
+      python27Packages.argparse
       python27Packages.coverage
+      python27Packages.epc
       python27Packages.flake8
       python27Packages.ipdb
       python27Packages.ipdbplugin
       python27Packages.ipython
+      python27Packages.jedi
       python27Packages.nose
       python27Packages.pylint
       python27Packages.recursivePthLoader
       python27Packages.sqlite3
+      python27Packages.unittest2
       python27Packages.virtualenv
     ] ++ lib.attrValues python27.modules;
 
