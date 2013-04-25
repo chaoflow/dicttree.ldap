@@ -168,3 +168,7 @@ class Directory(object):
 
     def iteritems(self):
         return ((node.name, node) for node in self.itervalues())
+
+    def add(self, addlist):
+        #XXX determine dn?
+        self.ldap.add_s(dn, addlist)

@@ -191,3 +191,14 @@ class Node(object):
 
     def __delitem__(self, key):
         del self.attrs[key]
+
+    def update(self, new_attrs):
+        """new_attrs is a dict of attrs
+           ie {"att1": [value1, ...], "att2": [value1, ...]}
+        """
+        action = MOD_ADD
+        for key in new_attrs.keys():
+            if key in self.attrs:
+                action = MOD_REPLACE
+            modlist = (action, key, new_attrs[key])
+            self.ldap.modify_s(self.name, modlist)
