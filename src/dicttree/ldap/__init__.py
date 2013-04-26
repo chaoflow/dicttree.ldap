@@ -3,6 +3,6 @@
 from __future__ import absolute_import
 
 from dicttree.ldap._directory import Directory
-from dicttree.ldap.aspects import entryUUID
+from dicttree.ldap.aspects import attrmapper
 
-Directory = entryUUID(Directory)
+Directory = attrmapper(Directory)

@@ -4,7 +4,6 @@ from dicttree.ldap._node import Node
 from dicttree.ldap.tests import mixins
 from dicttree.ldap.tests import unittest
 
-
 class TestLDAPDirectory(mixins.Slapd, unittest.TestCase):
     ENTRIES = {
         'cn=cn0,o=o': (('cn', ['cn0']),
@@ -35,10 +34,10 @@ class TestLDAPDirectory(mixins.Slapd, unittest.TestCase):
 
     def test_setitem(self):
         dn = 'cn=cn2,o=o'
-        node = Node(name=dn, attrs=self.ADDITIONAL[dn])
+        node = Node(name=dn, attrs=self.ADDITIONAL[dn], directory=self.dir)
         dn2 = 'cn=cn0,o=o'
         node2 = Node(name=dn2, attrs={'objectClass': ['applicationProcess'],
-                                      'cn': ['cn0']})
+                                      'cn': ['cn0']}, directory=self.dir)
 
         def addnode():
             self.dir[dn] = node
@@ -47,9 +46,9 @@ class TestLDAPDirectory(mixins.Slapd, unittest.TestCase):
             self.dir[dn2] = node2
 
         addnode()
-        self.assertEquals(node, self.dir[dn])
+        self.assertEquals(node.name, self.dir[dn].name)
         addexisting()
-        self.assertEquals(node2, self.dir[dn2])
+        self.assertEquals(node2.name, self.dir[dn2].name)
 
     def test_delitem(self):
         def delete():
@@ -82,13 +81,15 @@ class TestLDAPDirectory(mixins.Slapd, unittest.TestCase):
             del self.dir['cn=cn0,o=o']
 
         dn1 = 'cn=cn0,o=o'
-        node1 = Node(name=dn1, attrs=self.ENTRIES[dn1])
+        node1 = Node(name=dn1, attrs=self.ENTRIES[dn1],
+                     directory=self.dir)
 
         def addnode1():
             self.dir[dn1] = node1
 
         dn2 = 'cn=cn2,o=o'
-        node2 = Node(name=dn2, attrs=self.ADDITIONAL[dn2])
+        node2 = Node(name=dn2, attrs=self.ADDITIONAL[dn2],
+                     directory=self.dir)
 
         def addnode2():
             self.dir[dn2] = node2
@@ -147,8 +148,8 @@ class TestLDAPDirectory(mixins.Slapd, unittest.TestCase):
     def test_setdefault(self):
         dn = 'cn=cn0,o=o'
         dn2 = 'cn=cn2,o=o'
-        node = Node(name=dn, attrs=self.ENTRIES[dn])
-        node2 = Node(name=dn2, attrs=self.ADDITIONAL[dn2])
+        node = Node(name=dn, attrs=self.ENTRIES[dn], directory=self.dir)
+        node2 = Node(name=dn2, attrs=self.ADDITIONAL[dn2], directory=self.dir)
         fail = 'cn=fail,o=o'
 
         self.assertEqual(node, self.dir.setdefault(dn))
@@ -161,14 +162,16 @@ class TestLDAPDirectory(mixins.Slapd, unittest.TestCase):
     def test_update(self):
         dn = 'cn=cn0,o=o'
         node = Node(name=dn, attrs={'objectClass':
-                                    ['applicationProcess'], 'cn': ['cn0']})
-        dn2 = 'cn=cn2,o=o'
+                                    ['applicationProcess'], 'cn': ['cn0']},
+                    directory=self.dir)
+        dn2 = 'cn=cn1,o=o'
         node2 = Node(name=dn2, attrs={'objectClass':
-                                      ['organizationalRole'], 'cn': ['cn2']})
+                                      ['organizationalRole'], 'cn': ['cn2']},
+                     directory=self.dir)
         itemList = [(node.name, node), (node2.name, node2)]
         dir2 = dict(itemList)
 
         self.assertEqual(None, self.dir.update(dir2))
-        self.assertEqual(node, self.dir[dn])
+        self.assertEqual(node.name, self.dir[dn].name)
         self.assertEqual(None, self.dir.update(itemList))
-        self.assertEqual(node2, self.dir[dn2])
+        self.assertEqual(node2.name, self.dir[dn2].name)
