@@ -10,6 +10,7 @@ with import <nixpkgs> {};
              argparse
              coverage
              epc
+             elpy
              flake8
              ipdb
              ipdbplugin
