@@ -7,9 +7,7 @@ with import <nixpkgs> {};
           (lib.optionals (pythonDocs != null) [ pythonDocs ]) ++
           (with pythonPackages;
            [
-             argparse
              coverage
-             epc
              elpy
              flake8
              ipdb
