@@ -179,3 +179,26 @@ class Node(object):
 
     def iteritems(self):
         return iter([])
+
+    def __contains__(self, key):
+        return key in self.attrs
+
+    def __getitem__(self, key):
+        return self.attrs[key]
+
+    def __setitem__(self, key, value):
+        self.attrs[key] = value
+
+    def __delitem__(self, key):
+        del self.attrs[key]
+
+    def update(self, new_attrs):
+        """new_attrs is a dict of attrs
+           ie {"att1": [value1, ...], "att2": [value1, ...]}
+        """
+        action = MOD_ADD
+        for key in new_attrs.keys():
+            if key in self.attrs:
+                action = MOD_REPLACE
+            modlist = (action, key, new_attrs[key])
+            self.ldap.modify_s(self.name, modlist)

@@ -1,7 +1,7 @@
 import copy
 import ldap
 
-from ldap.ldapobject import ReconnectLDAPObject
+from pyldap import PyReconnectLDAPObject
 
 from dicttree.ldap import scope
 from dicttree.ldap._node import Node
@@ -22,7 +22,7 @@ class Directory(object):
             if self._ldap.whoami_s() == '':
                 del self._ldap
         if self._ldap is None:
-            self._ldap = ReconnectLDAPObject(self.uri)
+            self._ldap = PyReconnectLDAPObject(self.uri)
             self._ldap.bind_s(self.bind_dn, self.bind_pw)
         return self._ldap
 
@@ -168,3 +168,7 @@ class Directory(object):
 
     def iteritems(self):
         return ((node.name, node) for node in self.itervalues())
+
+    def add(self, addlist):
+        #XXX determine dn?
+        self.ldap.add_s(dn, addlist)
